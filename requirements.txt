@@ -1,0 +1,12 @@
+morfeusz2
+onnxruntime
+spacy
+nltk
+tqdm
+ipywidgets
+transformers
+numpy
+scipy
+sacremoses
+torch
+streamlit
