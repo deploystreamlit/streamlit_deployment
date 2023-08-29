@@ -54,7 +54,7 @@ def download_model():
     else:
         print("Failed to download the file.")
 
-# download_model()
+download_model()
 
 # Function to classify text
 def classify_text(input_text: str) -> Tuple[int, float]:
