@@ -40,7 +40,7 @@ def download_model():
     total_size = int(response.headers.get('content-length', 0))
 
     if response.status_code == 200:
-        with open(local_file_path, "wb") as file, tqdm(
+        with open(local_file_path, "wb+") as file, tqdm(
             desc=local_file_path,
             total=total_size,
             unit='B',
