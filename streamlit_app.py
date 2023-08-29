@@ -1,15 +1,21 @@
 import sys
 import os
 import subprocess
-
-command = "python -m spacy download pl_core_news_sm"
-subprocess.run(command, shell=True)
-
-
+import requests
+from tqdm import tqdm
+from dotenv import load_dotenv, find_dotenv
 from src.model_deployment.utils.nlp_utils import process_tokenize_input, get_ort_session, run_inference
 import streamlit as st
 from typing import Tuple
+import spacy
 
+env_file = find_dotenv()
+if env_file:
+    load_dotenv(env_file)
+
+if not spacy.util.is_package("pl_core_news_sm"):
+    command = "python -m spacy download pl_core_news_sm"
+    subprocess.run(command, shell=True)
 
 
 # Set page configuration
@@ -19,6 +25,36 @@ st.set_page_config(
     layout="wide"
 )
 
+
+def download_model():
+    file_url = os.getenv("DROPBOX_PATH")
+
+    # Extract the file's direct download link
+    direct_link = file_url.replace("www.dropbox.com", "dl.dropboxusercontent.com")
+
+    # Define the local file path where you want to save the downloaded file
+    local_file_path = os.getenv("MODEL_PATH")
+
+    # Download the file with a progress bar
+    response = requests.get(direct_link, stream=True)
+    total_size = int(response.headers.get('content-length', 0))
+
+    if response.status_code == 200:
+        with open(local_file_path, "wb") as file, tqdm(
+            desc=local_file_path,
+            total=total_size,
+            unit='B',
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as bar:
+            for data in response.iter_content(chunk_size=1024):
+                file.write(data)
+                bar.update(len(data))
+        print("File downloaded successfully.")
+    else:
+        print("Failed to download the file.")
+
+# download_model()
 
 # Function to classify text
 def classify_text(input_text: str) -> Tuple[int, float]:

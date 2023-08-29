@@ -70,8 +70,7 @@ def calculate_output_classes(ort_outputs: List[NDArray]) -> List[int]:
 
 def get_ort_session() -> InferenceSession:
     model_path = os.getenv("MODEL_PATH")
-    return None
-    # return onnxruntime.InferenceSession(model_path)
+    return onnxruntime.InferenceSession(model_path)
 
 
 def run_inference(session: InferenceSession, ort_inputs: Dict[str, NDArray]) -> Tuple[
